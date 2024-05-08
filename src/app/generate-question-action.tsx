@@ -1,4 +1,5 @@
 "use server";
+import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { openai } from "@ai-sdk/openai";
 import { streamObject } from "ai";
 import { createStreamableUI } from "ai/rsc";
@@ -15,40 +16,47 @@ const questionObject = z.object({
 
 export async function generateQuestions(notes: string) {
   const ui = createStreamableUI();
-  ui.update(<div style={{ color: "gray" }}>Loading...</div>);
+  ui.update(<li style={{ color: "gray" }}>Generování otázek</li>);
 
-  const { partialObjectStream } = await streamObject({
-    model: openai("gpt-4-turbo"),
-    schema: questionObject,
-    prompt: `You are Quiz Creator a friendly digital teacher that specializes in creating short answer test questions.
-             You craft questions that focus on key points from provided notes, ensuring students can answer them using only the information given.
-             The questions are formulated in the same language as the notes, maintaining clarity and relevance.
-             
-             Below are the notes from which you must generate questions:
-             ${notes}
-             `,
-  });
+  (async () => {
+    const { partialObjectStream } = await streamObject({
+      model: openai("gpt-4-turbo"),
+      schema: questionObject,
+      messages: [
+        {
+          role: "user",
+          content: `You are Quiz Creator a friendly digital teacher that specializes in creating short answer test questions.
+               You craft questions that focus on everything from the provided notes, ensuring students can answer them using only the information given.
+               The questions are formulated in the same language as the notes, maintaining clarity and relevance. You should generate as much questions as possible.
+               `,
+        },
+        {
+          role: "assistant",
+          content: "Great! Please provide the notes or the topic you'd like the questions to be based on, and I'll create the short answer test questions for you.",
+        },
+        {
+          role: "user",
+          content: notes,
+        },
+      ],
+    });
+    for await (const partialObject of partialObjectStream) {
+      ui.update(
+        <div className="flex flex-col gap-4 w-full">
+          {partialObject.questions?.map(({ question, correct } = {}, index) => (
+            <Card className="w-full" key={question ?? index}>
+              <CardHeader>
+                <CardTitle>{question}</CardTitle>
+                <CardDescription>{correct}</CardDescription>
+              </CardHeader>
+            </Card>
+          ))}
+        </div>
+      );
+    }
 
-  let uiArr: React.ReactNode[] = [];
-
-  for await (const partialObject of partialObjectStream) {
-    ui.update(
-      partialObject.questions?.map(
-        (
-          obj = {
-            question: "",
-            correct: "",
-          }
-        ) => (
-          <li key={obj.question}>
-            <strong>{obj.question ?? ""}</strong>-<span>{obj.correct ?? ""}</span>
-          </li>
-        )
-      ) ?? []
-    );
-  }
-
-  ui.done(uiArr);
+    ui.done();
+  })();
 
   return ui.value;
 }
