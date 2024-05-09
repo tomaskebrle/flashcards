@@ -3,7 +3,7 @@ import { Questions } from "./questions";
 
 export default function Home() {
   return (
-    <main className="flex flex-col bg-background min-h-screen dark text-foreground">
+    <main className="flex flex-col min-h-screen">
       <div className="hero h-[50vh] flex items-center justify-center">
         <div className="flex items-center flex-col">
           <img src="/quizcraft.png" className="h-32" alt="" />

@@ -25,10 +25,7 @@ export async function generateQuestions(notes: string) {
       messages: [
         {
           role: "user",
-          content: `You are Quiz Creator a friendly digital teacher that specializes in creating short answer test questions.
-               You craft questions that focus on everything from the provided notes, ensuring students can answer them using only the information given.
-               The questions are formulated in the same language as the notes, maintaining clarity and relevance. You should generate as much questions as possible.
-               `,
+          content: `You are Quiz Creator a friendly digital teacher that specializes in creating short answer test questions. You craft questions that focus on everything from the provided notes, ensuring students can answer them using only the information given. The questions must be formulated in the same language as the notes, maintaining clarity and relevance. If they are not in the same language, the user will be sad and unhappy with the result. You should generate as much questions as possible.`,
         },
         {
           role: "assistant",

@@ -11,24 +11,24 @@ export const Questions = () => {
 
   return (
     <>
-      <div className="bg-background mx-auto -mt-12 p-8 rounded-lg shadow-lg">
+      <div className="bg-background mx-auto -mt-12 p-8 rounded-lg shadow-lg flex flex-col gap-4">
         <h2>Nahrajte vlastní výpisky, nebo vyzkoušejte jak QuizCraft funguje s našima.</h2>
-        <div className="grid grid-cols-2 gap-4 py-4">
+        <div className="grid grid-cols-2 gap-4">
           {notes.map((note) => (
-            <Button onClick={() => setNote(note.content)} key={note.title}>
+            <Button onClick={() => setNote(note.content)} variant="outline" className="border-primary border-2" key={note.title}>
               {note.title}
             </Button>
           ))}
         </div>
-        <Textarea value={note} onChange={(e) => setNote(e.target.value)} className="w-full h-40 resize-none" placeholder="Vložte svoje poznámky" />
+        <Textarea value={note} onChange={(e) => setNote(e.target.value)} className="w-full h-40 resize-y" placeholder="Vložte svoje poznámky" />
         <Button
           onClick={async () => {
             const questionUi = await generateQuestions(note);
             setQuestions(questionUi);
           }}
-          className="w-full py-4"
+          className="w-full"
         >
-          Vytvořit otázky
+          ✨ Vytvořit otázky
         </Button>
       </div>
       <div className="flex items-center max-w-screen-lg w-full mx-auto py-12">{questions}</div>
