@@ -13,7 +13,7 @@ export const Questions = () => {
     <>
       <div className="bg-background mx-auto -mt-12 p-8 rounded-lg shadow-lg flex flex-col gap-4">
         <h2>Nahrajte vlastní výpisky, nebo vyzkoušejte jak QuizCraft funguje s našima.</h2>
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
           {notes.map((note) => (
             <Button onClick={() => setNote(note.content)} variant="outline" className="border-primary border-2" key={note.title}>
               {note.title}
